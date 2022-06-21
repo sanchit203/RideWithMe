@@ -1,0 +1,29 @@
+<%- include('sign_partials/header') %> 
+  <form action="/signin" method="post">
+    <h1 class="h1 mb-3 fw-normal">Login</h1>
+    <p class="change">New member? <a href="/signup" role="button">Signup</a></p>
+    <% if (message) { %>
+      <p style="color: red;" class="text-center"><%= message.error %></p>
+    <% } %>
+    <div class="form-floating">
+      <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="username" required autocomplete="off">
+      <label for="floatingInput">Email address</label>
+    </div>
+    <div class="form-floating">
+      <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" minlength="8" required>
+      <label for="floatingPassword">Password</label>
+    </div>
+
+    <!-- <div class="checkbox mb-3">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div> -->
+    <button class="w-100 btn btn-lg btn-primary button" type="submit">Sign in</button>
+    <div>
+        <a class="w-100 btn btn-outline-dark authbutton" href="/auth/facebook" role="button"><img class="float-start" src="/images/facebook.png" alt="f"> Sign in with Facebook</a>
+    </div>
+    <div>
+        <a class="w-100 btn btn-outline-dark authbutton" href="/auth/google" role="button"><img class="float-start" src="/images/google.png" alt="G"> Sign in with Google</a>
+    </div>
+<%- include('sign_partials/footer') %> 

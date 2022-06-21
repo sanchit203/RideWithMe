@@ -1,0 +1,110 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  background-color: #EEEEEE;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 0px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-control{
+  border: none;
+  border-bottom: 1px solid black;
+  border-radius: 0;
+  background-color: #EEEEEE;
+}
+
+input:focus, input.form-control:focus{
+  outline:none !important;
+  outline-width: 0 !important;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  border-color: black;
+  background-color: #EEEEEE
+}
+
+
+.button{
+  border-radius: 20px;
+  background-color: #3da886;
+  border-color: white;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.button:focus{
+  background-color: #21c792;
+  outline: none !important;
+  outline-width: 0 !important;
+}
+
+.button:hover{
+  background-color: #21c792;
+  border-color: white;
+}
+
+.authbutton{
+  margin-bottom: 10px;
+  border-radius: 20px;
+}
+
+img{
+  width: 10%;
+}
+
+.change{
+  font-size: 14px;
+  text-align: right;
+  margin: 0;
+}
+
+.logo{
+  width: 100%;
+}
+
+.line:before,
+.line:after {
+  background-color: rgb(82, 76, 76);
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 50%;
+}
+
+.line:before {
+  right: 0.5em;
+  margin-left: -50%;
+}
+
+.line:after {
+  left: 0.5em;
+  margin-right: -50%;
+}
+
+.line {
+  margin-top: 2%;
+  margin-bottom: 5%;
+  padding-left: 6.5%;
+  padding-right: 6.5%;
+  color: rgb(82, 76, 76);
+}
