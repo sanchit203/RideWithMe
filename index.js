@@ -32,9 +32,11 @@ mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true, use
 const userSchema = new mongoose.Schema({
     username : String,
     password : String,
-    googleId : String,
-    facebookId : String,
-    phoneNo : String
+    //googleId : String,
+    //facebookId : String,
+    //phoneNo : String,
+    ridesPublished : [{_id : String, seats : Number}],
+    ridesBooked : [{_id : String , seats : Number}]
 });
 
 userSchema.plugin(passportLocalMongoose);
@@ -53,7 +55,7 @@ passport.deserializeUser(function(id, done) {
     });
 });
 
-passport.use(new GoogleStrategy({
+/* passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/index"
@@ -63,19 +65,15 @@ passport.use(new GoogleStrategy({
       return cb(err, user);
     });
   }
-));
+)); */
+
+var id = "";
 
 app.get("/", function(req, res){
-    //if(req.isAuthenticated())
-    //{
-        res.render("search");
-    //}
-    //else{
-    //    res.redirect("/signin");
-    //}
+    res.render("search");
 });
 
-app.get("/auth/google", function(req, res)
+/* app.get("/auth/google", function(req, res)
 {
     passport.authenticate('google', { scope: ["profile"] });
 });
@@ -84,7 +82,7 @@ app.get("/auth/google/index",
   passport.authenticate('google', { failureRedirect: "/signin" }),
   function(req, res) {
     res.redirect('/');
-  });
+  }); */
 
 app.get("/signin", function(req,res){
     res.render("signin",{message : req.flash()});
@@ -114,7 +112,14 @@ app.post("/signup", function(req, res, next){
                             console.log(err);
                         }
                         else{
-                            res.redirect("/");
+                            if(id=="")
+                            {
+                                res.redirect("/");
+                            }
+                            else
+                            {
+                                res.redirect("/rides/"+id);
+                            }
                         }
                     })
                 });
@@ -126,7 +131,13 @@ app.post("/signup", function(req, res, next){
 
 
 app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: 'Invalid username or password.' }), function(req, res) {
-    res.redirect('/');
+    if(id == ""){
+        res.redirect('/');
+    }
+    else
+    {
+        res.redirect("/rides/"+id);
+    }
 });
 
 //Routes for search panel;
@@ -135,7 +146,9 @@ const rideSchema = new mongoose.Schema({
     starting : String,
     going : String,
     date : String,
-    seats : Number
+    seats : Number,
+    onwerId : String,
+    passangerIds : [{_id : String, seats: Number}]
 })
 
 const Rides = mongoose.model("Rides", rideSchema);
@@ -155,7 +168,13 @@ app.post("/", function(req, res){
 });
 
 app.get("/publish", function(req, res){
-    res.render("publish");
+    if(req.isAuthenticated())
+    {
+        res.render("publish");
+    }
+    else{
+        res.redirect("/signin");
+    }
 });
 
 app.post("/publish", function(req, res){
@@ -163,7 +182,8 @@ app.post("/publish", function(req, res){
         starting : req.body.starting,
         going : req.body.going,
         seats : req.body.seats,
-        date : req.body.date
+        date : req.body.date,
+        onwerId : req.user._id
     })
 
     ride.save(function(err, result){
@@ -171,7 +191,16 @@ app.post("/publish", function(req, res){
             console.log(err);
         }
         else{
-            res.send("publishing..");  //This thing needs to be updated
+            User.findByIdAndUpdate(req.user._id, {$push : {ridesPublished : {_id : result._id, seats : req.body.seats}}}, function(er, RES){
+                if(!er)
+                {
+                    res.redirect("/publishedrides");
+                }
+                else
+                {
+                    console.log(er);
+                }
+            });
         }
     })
 });
@@ -185,22 +214,92 @@ app.get("/rides/:rideId", function(req, res){
             console.log(err);
         }
         else{
-            res.render("ride_detail",{ride: ride})
+            var same = "false";
+            if(req.isAuthenticated() && ride.onwerId == req.user._id)
+            {
+                same = "true";
+            }
+            if(req.isAuthenticated()){
+                for(var i= 0;i<ride.passangerIds.length;i++)
+                {
+                    if(req.user._id == ride.passangerIds[i]._id)
+                    {
+                        same = "true";
+                    }
+                }
+            }
+            res.render("ride_detail",{ride: ride, check : same})
         }
-    })
+    });
 });
 
 app.post("/rides/:rideId", function(req, res){
-    const rideId = req.params.rideId;
-    Rides.findByIdAndUpdate(rideId, {$inc: {seats : -req.body.seats}}, function(err, result){
-        if(err)
-        {
-            console.log(err);
-        }
-        else{
-            res.send("Updated"); //This thing needs to be updated.
-        }
-    });
+    if(req.isAuthenticated())
+    {
+        id = "";
+        const rideId = req.params.rideId;
+        Rides.findByIdAndUpdate(rideId, {$inc: {seats : -req.body.seats}, $push: {passangerIds :{_id: req.user._id, seats: req.body.seats}}}, function(err, result){
+            if(err)
+            {
+                console.log(err);
+            }
+            else{
+                User.findByIdAndUpdate(req.user._id, {$push : {ridesBooked : {_id : result._id, seats: req.body.seats}}}, function(er, RES){
+                    if(!er)
+                    {
+                        res.redirect("/bookedrides");
+                    }
+                    else
+                    {
+                        console.log(er);
+                    }
+                });
+            }
+        });
+    }
+    else
+    {
+        id = req.params.rideId;
+        res.redirect("/signin");
+    }
+});
+
+app.get("/publishedrides", function(req, res){
+    if(req.isAuthenticated()){
+        Rides.find().where('_id').in(req.user.ridesPublished).exec((err, records) => {
+            if(err)
+            {
+                console.log(err);
+            }
+            else
+            {
+                res.render("publishedrides",{ridesPublished : records});
+            }
+        });
+    }
+    else
+    {
+        res.redirect("/signin");
+    }
+})
+
+app.get("/bookedrides", function(req, res){
+    if(req.isAuthenticated()){
+        Rides.find().where('_id').in(req.user.ridesBooked).exec((err, records) => {
+            if(err)
+            {
+                console.log(err);
+            }
+            else
+            {
+                res.render("bookedrides",{ridesBooked : records});
+            }
+        });
+    }
+    else
+    {
+        res.redirect("/signin");
+    }
 })
 
 app.listen(port, () => { console.log("Server runnig!");})

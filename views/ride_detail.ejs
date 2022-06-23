@@ -8,9 +8,11 @@
 </head>
 <body>
     <h1><%= ride.date %> Seats available: <%= ride.seats %> </h1>
+    <% if(check == "false"){ %> 
     <form action="/rides/<%= ride._id %>" method="post">
         <input type="number" name="seats" id="" placeholder="Seats" min="1" max="<%= ride.seats %>">
         <button type="submit">Book Ride</button>
     </form>
+    <% } %> 
 </body>
 </html>
