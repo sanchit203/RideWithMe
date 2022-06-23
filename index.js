@@ -66,13 +66,13 @@ passport.use(new GoogleStrategy({
 ));
 
 app.get("/", function(req, res){
-    if(req.isAuthenticated())
-    {
-        res.render("index");
-    }
-    else{
-        res.redirect("/signin");
-    }
+    //if(req.isAuthenticated())
+    //{
+        res.render("search");
+    //}
+    //else{
+    //    res.redirect("/signin");
+    //}
 });
 
 app.get("/auth/google", function(req, res)
@@ -128,5 +128,79 @@ app.post("/signup", function(req, res, next){
 app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: 'Invalid username or password.' }), function(req, res) {
     res.redirect('/');
 });
+
+//Routes for search panel;
+
+const rideSchema = new mongoose.Schema({
+    starting : String,
+    going : String,
+    date : String,
+    seats : Number
+})
+
+const Rides = mongoose.model("Rides", rideSchema);
+
+app.post("/", function(req, res){
+    Rides.find({starting : req.body.starting, going : req.body.going, date : req.body.date}, function(err, rideList){
+        if(!err)
+        {
+            res.render("rides",{starting : req.body.starting, going : req.body.going, rideItems : rideList})
+        }
+        else
+        {
+            console.log(err);
+            res.send("Some error occurred");
+        }
+    })
+});
+
+app.get("/publish", function(req, res){
+    res.render("publish");
+});
+
+app.post("/publish", function(req, res){
+    const ride = new Rides({
+        starting : req.body.starting,
+        going : req.body.going,
+        seats : req.body.seats,
+        date : req.body.date
+    })
+
+    ride.save(function(err, result){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send("publishing..");  //This thing needs to be updated
+        }
+    })
+});
+
+//rides routes
+app.get("/rides/:rideId", function(req, res){
+    const rideId = req.params.rideId;
+    Rides.findById(rideId, function(err, ride){
+        if(err)
+        {
+            console.log(err);
+        }
+        else{
+            res.render("ride_detail",{ride: ride})
+        }
+    })
+});
+
+app.post("/rides/:rideId", function(req, res){
+    const rideId = req.params.rideId;
+    Rides.findByIdAndUpdate(rideId, {$inc: {seats : -req.body.seats}}, function(err, result){
+        if(err)
+        {
+            console.log(err);
+        }
+        else{
+            res.send("Updated"); //This thing needs to be updated.
+        }
+    });
+})
 
 app.listen(port, () => { console.log("Server runnig!");})

@@ -55,6 +55,12 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>HEY</h1>
+  <a href="/publish" role="button">Publish a ride</a> <br>
+  <form action="/" method="post">
+    <input type="text" name="starting" id="start" placeholder="Leaving from..." required>
+    <input type="text" name="going" id="end" placeholder="Going to..." required>
+    <input type="date" name="date" id="" required>
+    <button type="submit">Search</button>
+  </form>
 </body>
 </html>
