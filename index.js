@@ -154,10 +154,10 @@ const rideSchema = new mongoose.Schema({
 const Rides = mongoose.model("Rides", rideSchema);
 
 app.post("/", function(req, res){
-    Rides.find({starting : req.body.starting, going : req.body.going, date : req.body.date}, function(err, rideList){
+    Rides.find({starting : lodash.lowerCase(req.body.starting), going : lodash.lowerCase(req.body.going), date : req.body.date}, function(err, rideList){
         if(!err)
         {
-            res.render("rides",{starting : req.body.starting, going : req.body.going, rideItems : rideList})
+            res.render("rides",{starting : lodash.capitalize(req.body.starting), going : lodash.capitalize(req.body.going), rideItems : rideList})
         }
         else
         {
@@ -179,8 +179,8 @@ app.get("/publish", function(req, res){
 
 app.post("/publish", function(req, res){
     const ride = new Rides({
-        starting : req.body.starting,
-        going : req.body.going,
+        starting : lodash.lowerCase(req.body.starting),
+        going : lodash.lowerCase(req.body.going),
         seats : req.body.seats,
         date : req.body.date,
         onwerId : req.user._id
