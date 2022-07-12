@@ -30,6 +30,7 @@ app.use(passport.session());
 mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true, useUnifiedTopology: true});
 
 const userSchema = new mongoose.Schema({
+    firstname : String,
     username : String,
     password : String,
     //googleId : String,
@@ -102,7 +103,7 @@ app.post("/signup", function(req, res, next){
                 res.render("signup", {message : "Username already exist! Please SignIn"});
             }
             else{
-                User.register(new User({username: req.body.username}), req.body.password, function(err, user){
+                User.register(new User({username: req.body.username, firstname: req.body.firstname}), req.body.password, function(err, user){
                     if(err){
                         console.log('error while user register!', err);
                         return next(err);
@@ -128,8 +129,6 @@ app.post("/signup", function(req, res, next){
     });
 });
 
-
-
 app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: 'Invalid username or password.' }), function(req, res) {
     if(id == ""){
         res.redirect('/');
@@ -140,6 +139,13 @@ app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin',
     }
 });
 
+app.get('/logout', function(req, res, next) {
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      res.redirect('/');
+    });
+});
+
 //Routes for search panel;
 
 const rideSchema = new mongoose.Schema({
@@ -148,6 +154,7 @@ const rideSchema = new mongoose.Schema({
     date : String,
     seats : Number,
     onwerId : String,
+    ownerName : String,
     passangerIds : [{_id : String, seats: Number}]
 })
 
@@ -183,7 +190,8 @@ app.post("/publish", function(req, res){
         going : lodash.lowerCase(req.body.going),
         seats : req.body.seats,
         date : req.body.date,
-        onwerId : req.user._id
+        onwerId : req.user._id,
+        ownerName : req.user.firstname
     })
 
     ride.save(function(err, result){

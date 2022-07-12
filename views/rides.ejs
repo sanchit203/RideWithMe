@@ -1,24 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+<%- include('app_partials/header')%> 
     <p>
         <%= starting %> -> <%= going %> : <br>
         <%=rideItems.length %> rides available.
     </p>
     <% if(rideItems.length!=0) {%>
-        <ul>
         <%for(let i =0;i<rideItems.length;i++){ %>
-            <a href="/rides/<%= rideItems[0]._id %> " role="button">
-                <li><%= rideItems[i].starting %>  -> <%= rideItems[i].going %> </li>
-            </a>
-        <% } %> 
-        </ul>
+            <div class="card">
+                <h5 class="card-header"><%= starting %> -> <%= going %></h5>
+                <div class="card-body">
+                  <h6 class="card-title">Published By : <%= rideItems[i].ownerName %></h6>
+                  <a href="/rides/<%= rideItems[0]._id %> " class="btn btn-primary"> Book Now</a>
+                </div>
+              </div>
+        <% } %>
     <% } %> 
-</body>
-</html>
+<%- include('app_partials/footer') %> 

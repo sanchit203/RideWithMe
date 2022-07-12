@@ -5,6 +5,10 @@
       <p style="color: red;" class="text-center"><%= message %></p>
     <% } %>
     <form action="/signup" method="post">
+      <div class="form-floating">
+        <input type="text" class="form-control" id="floatingInput" placeholder="Name" name="firstname" required autocomplete="off">
+        <label for="floatingInput">Name</label>
+      </div>
         <div class="form-floating">
           <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="username" required autocomplete="off">
           <label for="floatingInput">Email address</label>
