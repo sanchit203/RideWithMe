@@ -11,7 +11,7 @@ const flash = require('connect-flash');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const app = express();
-const port = process.env.PORT;
+var port = process.env.PORT;
 if (port == null || port == "") {
     port = 3000;
 }
