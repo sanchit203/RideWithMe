@@ -11,10 +11,7 @@ const flash = require('connect-flash');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const app = express();
-var port = process.env.PORT;
-if (port == null || port == "") {
-    port = 3000;
-}
+app.set('port', (process.env.PORT || 3000));
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -313,4 +310,6 @@ app.get("/bookedrides", function(req, res){
     }
 })
 
-app.listen(port, () => { console.log("Server runnig!");})
+app.listen(app.get('port'), function() {
+    console.log('Node app is running on port', app.get('port'));
+});
