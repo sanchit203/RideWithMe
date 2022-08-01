@@ -27,7 +27,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://velectra_ridewithme:"+process.env.MONGOPASS+"@cluster0.j2d7m.mongodb.net/ridewithmeDB",{useNewUrlParser: true, useUnifiedTopology: true});
 
 const userSchema = new mongoose.Schema({
     firstname : String,
