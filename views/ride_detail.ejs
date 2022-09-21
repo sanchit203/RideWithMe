@@ -1,18 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1><%= ride.date %> Seats available: <%= ride.seats %> </h1>
-    <% if(check == "false"){ %> 
-    <form action="/rides/<%= ride._id %>" method="post">
-        <input type="number" name="seats" id="" placeholder="Seats" min="1" max="<%= ride.seats %>">
-        <button type="submit">Book Ride</button>
-    </form>
-    <% } %> 
-</body>
-</html>
+<%- include('app_partials/header')%> 
+
+<div class="modal modal-signin position-static d-block py-5" tabindex="-1" role="dialog" id="modalSignin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="p-4 pb-3 border-bottom-0">
+          <h3 style="text-align: center;"><%= ride.date %></h3>
+          <h5 style="text-align: center;">Seats available: <%= ride.seats %></h5>
+          </div>
+          <div class="container" style="padding-bottom: 24px;">
+            <div class="container">
+            <h4 class="card-header"><%= ride.starting %>  -> <%= ride.going %> </h4>
+            <div class="card-body" style="margin-top: 5px;">
+                <h5 class="card-title">Published By : <text style="text-transform: uppercase;"><%= ride.ownerName %></text></h5>
+                <p class="card-text" style="margin-top: 5px;">With supporting text below as a natural lead-in to additional content.</p>
+                <% if(check == "false" && owner=="false" && ride.seats> 0){ %> 
+                    <form action="/rides/<%= ride._id %>" method="post">
+                        <div class="form-floating mb-3">
+                          <input type="number"  class="form-control rounded-3" name="seats" id="people" placeholder="seats" min="1" max=<%= ride.seats %> style ="width: 270px;display: inline;margin-right: 20px;" required>
+                          <label for="people">Seats</label>
+                          <button type="submit" class="button btn btn-primary" style="width: 130px;height: 44px;">Book Ride</button>
+                          </div>
+                    </form>
+                    <% }else if(owner == "true"){ %>
+                        <h4 style="text-align: center;">Published</h4>
+                        <% }else if(check == "true"){%>
+                        <h4 style="text-align: center;">Booked</h4>
+                        <% } else{%>
+                        <h4 style="text-align: center;">Ride Full, Please Book Another</h4>
+                        <% } %> 
+            </div>
+        </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <%- include('app_partials/footer') %> 

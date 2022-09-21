@@ -1,19 +1,18 @@
+
 <%- include('app_partials/header')%> 
-    <h3>Rides Booked: <%= ridesBooked.length %> </h3>
-    <ul>
-        <% for(var i=ridesBooked.length-1 ;i>=0;i--){ %>
+<div class="container">
+    <h3 style="text-align: center;">Total Rides Booked: <%= ridesBooked.length%></h3>
+    <ul style="padding-left:0;">
+        <% for(var i=ridesBooked.length - 1 ;i>=0;i--){ %>
             <div class="card">
                 <h5 class="card-header"><%= ridesBooked[i].starting %>  -> <%= ridesBooked[i].going %> </h5>
                 <div class="card-body">
                   <h5 class="card-title">Booked on <%= ridesBooked[i].date %></h5>
                   <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                  <a href="/rides/<%= ridesBooked[i]._id %> " class="btn btn-primary">See Details</a>
+                  <a href="/rides/<%= ridesBooked[i]._id %> " class="button btn btn-primary">See Details</a>
                 </div>
-            </div>
-                <a href="/rides/<%= ridesBooked[0]._id %> " role="button">
-                    <li><%= ridesBooked[i].starting %>  -> <%= ridesBooked[i].going %> </li>
-                </a>
+              </div>
         <% } %> 
     </ul>
-</body>
-</html>
+  </div>
+<%- include('app_partials/footer') %> 

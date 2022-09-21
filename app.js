@@ -71,7 +71,7 @@ passport.deserializeUser(function(id, done) {
 var id = "";
 
 app.get("/", function(req, res){
-    res.render("search");
+    res.render("search", {signedin : req.isAuthenticated()});
 });
 
 /* app.get("/auth/google", function(req, res)
@@ -164,7 +164,7 @@ app.post("/", function(req, res){
     Rides.find({starting : lodash.lowerCase(req.body.starting), going : lodash.lowerCase(req.body.going), date : req.body.date}, function(err, rideList){
         if(!err)
         {
-            res.render("rides",{starting : lodash.capitalize(req.body.starting), going : lodash.capitalize(req.body.going), rideItems : rideList})
+            res.render("rides",{starting : lodash.capitalize(req.body.starting), going : lodash.capitalize(req.body.going), rideItems : rideList, signedin : req.isAuthenticated()})
         }
         else
         {
@@ -177,7 +177,7 @@ app.post("/", function(req, res){
 app.get("/publish", function(req, res){
     if(req.isAuthenticated())
     {
-        res.render("publish");
+        res.render("publish", {signedin : req.isAuthenticated()});
     }
     else{
         res.redirect("/signin");
@@ -222,10 +222,11 @@ app.get("/rides/:rideId", function(req, res){
             console.log(err);
         }
         else{
+            var owner = "false";
             var same = "false";
             if(req.isAuthenticated() && ride.onwerId == req.user._id)
             {
-                same = "true";
+                owner = "true";
             }
             if(req.isAuthenticated()){
                 for(var i= 0;i<ride.passangerIds.length;i++)
@@ -236,7 +237,7 @@ app.get("/rides/:rideId", function(req, res){
                     }
                 }
             }
-            res.render("ride_detail",{ride: ride, check : same})
+            res.render("ride_detail",{ride: ride, check : same, signedin : req.isAuthenticated(), owner : owner})
         }
     });
 });
@@ -281,7 +282,7 @@ app.get("/publishedrides", function(req, res){
             }
             else
             {
-                res.render("publishedrides",{ridesPublished : records});
+                res.render("publishedrides",{ridesPublished : records, signedin : req.isAuthenticated()});
             }
         });
     }
@@ -300,7 +301,7 @@ app.get("/bookedrides", function(req, res){
             }
             else
             {
-                res.render("bookedrides",{ridesBooked : records});
+                res.render("bookedrides",{ridesBooked : records, signedin : req.isAuthenticated()});
             }
         });
     }

@@ -1,18 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="/publish" method="post">
-        <input type="text" name="starting" id="" placeholder="leaving from..." required>
-        <input type="text" name="going" id="" placeholder="going to..." required>
-        <input type="date" name="date" id="" required>
-        <input type="number" name="seats" id="" placeholder="seats" min="1" max="7" required>
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>
+<%- include('app_partials/header')%> 
+<div class="modal modal-signin position-static d-block py-5" tabindex="-1" role="dialog" id="modalSignin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="p-4 pb-3 border-bottom-0">
+          <h3 style="text-align: center;">Publish ride...</h3>
+        </div>
+        <div class="modal-body p-5 pt-0">
+          <form action="/publish" method="post">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control rounded-3" id="leaving" name="starting" placeholder="leaving from..." required>
+              <label for="leaving">leaving from...</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control rounded-3" name="going" id="place" placeholder="going to..." required>
+              <label for="place">going to...</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control rounded-3" name="date" id="on" required>
+                <label for="on">Date</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="number"  class="form-control rounded-3" name="seats" id="people" placeholder="seats" min="1" max="7" style ="width: 270px;display: inline;margin-right: 20px;" required>
+                <label for="people">Seats</label>
+                <button type="submit" class="button btn btn-primary" style="width: 96px;height: 44px;">Submit</button>
+                </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<%- include('app_partials/footer') %> 
