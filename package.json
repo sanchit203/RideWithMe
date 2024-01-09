@@ -9,7 +9,7 @@
   "author": "Sanchit",
   "license": "ISC",
   "engines": {
-    "node": "14.x"
+    "node": "18.x"
   },
   "dependencies": {
     "body-parser": "^1.20.0",
